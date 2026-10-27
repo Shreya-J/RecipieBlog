@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="form-card" style="max-width: 450px; animation: fadeIn 0.4s ease;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 60px; height: 60px; background-color: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <i data-lucide="lock" style="width: 28px; height: 28px; stroke-width: 1.75;"></i>
+            </div>
+            <h2 style="margin-bottom: 0.25rem;">Welcome Back</h2>
+            <p style="color: var(--text-muted);">Log in to access your personal cookbook.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+
+            <button type="submit" class="btn btn-main" style="width: 100%; margin-top: 1rem;">
+                <i data-lucide="log-in" style="width: 18px; height: 18px;"></i> Log In
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: var(--text-muted);">
+            Don't have an account? <a href="{% url 'register' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign Up</a>
+        </p>
+    </div>
+{% endblock %}

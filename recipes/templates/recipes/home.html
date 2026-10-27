@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Hero Banner Section -->
+    <div class="hero-section" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%); padding: 3.5rem 2rem; border-radius: var(--radius-lg); color: white; margin-bottom: 2.5rem; text-align: center; box-shadow: var(--shadow-md); position: relative; overflow: hidden; animation: fadeIn 0.4s ease;">
+        <div style="position: relative; z-index: 2;">
+            <h1 style="color: white; font-size: 2.75rem; margin-bottom: 0.75rem; font-family: var(--font-display);">Community Recipe Gallery</h1>
+            <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.15rem; max-width: 600px; margin: 0 auto; font-weight: 500;">
+                Discover and cook culinary creations shared by food enthusiasts.
+            </p>
+        </div>
+        <div style="position: absolute; right: -30px; bottom: -50px; opacity: 0.15; pointer-events: none;">
+            <i data-lucide="cooking-pot" style="width: 240px; height: 240px; stroke-width: 1.25;"></i>
+        </div>
+        <div style="position: absolute; left: -30px; top: -30px; opacity: 0.1; pointer-events: none;">
+            <i data-lucide="soup" style="width: 160px; height: 160px; stroke-width: 1.25;"></i>
+        </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="card-grid">
+        {% for recipe in recipes %}
+            <article class="recipe-card fade-in-item">
+                <!-- Decorative Card Top -->
+                <div style="height: 140px; background: linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); color: var(--primary);">
+                    <i data-lucide="utensils-cross" style="width: 48px; height: 48px; stroke-width: 1.25;"></i>
+                </div>
+                
+                <div class="recipe-card-content">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.35rem; line-height: 1.3;">{{ recipe.title }}</h3>
+                    
+                    <p style="font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; flex-grow: 1;">
+                        {{ recipe.instructions|truncatewords:18 }}
+                    </p>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                            View Full Recipe <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </a>
+                    </div>
+
+                    <div class="recipe-meta">
+                        <span style="display: flex; align-items: center; gap: 0.35rem; color: var(--text-muted); font-weight: 500;">
+                            <i data-lucide="user" style="width: 14px; height: 14px; color: var(--primary);"></i>
+                            {{ recipe.created_by.username }}
+                        </span>
+                        <span style="margin-left: auto; display: flex; align-items: center; gap: 0.25rem;">
+                            <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                            {{ recipe.created_at|date:"M j" }}
+                        </span>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <!-- Centered Empty State -->
+            <div style="grid-column: 1 / -1; text-align: center; padding: 5rem 2rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 2.5px dashed var(--border); max-width: 500px; margin: 2rem auto; box-shadow: var(--shadow-sm); animation: fadeIn 0.4s ease;">
+                <div style="width: 80px; height: 80px; background-color: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i data-lucide="cookie" style="width: 40px; height: 40px; stroke-width: 1.5;"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">No Recipes Found</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-muted);">
+                    Be the first one to share a culinary masterpiece with our community!
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'recipe_create' %}" class="btn btn-main">
+                        <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Share Your First Recipe
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-main">
+                        <i data-lucide="log-in" style="width: 18px; height: 18px;"></i> Log In to Share
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

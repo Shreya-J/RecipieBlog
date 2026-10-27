@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <article style="max-width: 900px; margin: 0 auto; animation: fadeIn 0.4s ease;">
+        <!-- Back Link & Header -->
+        <div style="margin-bottom: 2rem;">
+            <a href="{% url 'home' %}" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; margin-bottom: 1.5rem;">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Gallery
+            </a>
+            
+            <div style="background: linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%); padding: 2.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); position: relative; overflow: hidden; margin-top: 0.5rem;">
+                <div style="position: relative; z-index: 2;">
+                    <h1 style="font-family: var(--font-display); font-size: 2.75rem; margin-bottom: 0.75rem; line-height: 1.2;">{{ recipe.title }}</h1>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; color: var(--text-muted); font-size: 0.9rem;">
+                        <span style="display: flex; align-items: center; gap: 0.35rem; font-weight: 600; color: var(--primary);">
+                            <i data-lucide="user" style="width: 16px; height: 16px;"></i> Shared by {{ recipe.created_by.username }}
+                        </span>
+                        <span>&bull;</span>
+                        <span style="display: flex; align-items: center; gap: 0.35rem;">
+                            <i data-lucide="calendar" style="width: 16px; height: 16px;"></i> {{ recipe.created_at|date:"F j, Y" }}
+                        </span>
+                    </div>
+                </div>
+                <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.05; pointer-events: none;">
+                    <i data-lucide="chef-hat" style="width: 120px; height: 120px;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2.5rem;" id="recipe-details-grid">
+            <script>
+                // Responsive grid adjustment
+                function adjustGrid() {
+                    const grid = document.getElementById("recipe-details-grid");
+                    if (window.innerWidth >= 768) {
+                        grid.style.gridTemplateColumns = "1fr 2fr";
+                    } else {
+                        grid.style.gridTemplateColumns = "1fr";
+                    }
+                }
+                window.addEventListener("resize", adjustGrid);
+                document.addEventListener("DOMContentLoaded", adjustGrid);
+            </script>
+
+            <!-- Ingredients Column -->
+            <section style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); height: fit-content;">
+                <h3 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.5rem;">
+                    <i data-lucide="shopping-basket" style="color: var(--primary); width: 22px; height: 22px;"></i> Ingredients
+                </h3>
+                
+                <!-- Hidden raw ingredients data to parse -->
+                <div id="ingredients-raw" style="display: none;">{{ recipe.ingredients }}</div>
+                
+                <ul id="ingredients-list" style="list-style: none;">
+                    <!-- Fallback if JS is disabled -->
+                    <li style="white-space: pre-wrap; font-size: 0.95rem; line-height: 1.7;">{{ recipe.ingredients }}</li>
+                </ul>
+            </section>
+
+            <!-- Instructions Column -->
+            <section style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                <h3 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 0.5rem;">
+                    <i data-lucide="cooking-pot" style="color: var(--primary); width: 22px; height: 22px;"></i> Instructions
+                </h3>
+                <div style="line-height: 1.8; font-size: 1rem; color: var(--text-main); white-space: pre-wrap;">
+                    {{ recipe.instructions }}
+                </div>
+            </section>
+        </div>
+
+        <!-- Author Tools Section -->
+        {% if recipe.created_by == user %}
+            <div style="margin-top: 3rem; padding: 2rem; border: 1px solid #bbf7d0; background: #f0fdf4; border-radius: var(--radius-md); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; box-shadow: var(--shadow-sm);">
+                <div style="width: 50px; height: 50px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i data-lucide="award" style="width: 26px; height: 26px;"></i>
+                </div>
+                <div style="flex-grow: 1; min-width: 240px;">
+                    <h4 style="margin: 0 0 0.25rem 0; color: #166534; font-size: 1.15rem;">Recipe Author Controls</h4>
+                    <p style="margin: 0; color: #166534; font-size: 0.9rem;">
+                        You created this recipe! You can modify or remove this creation from the gallery.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn btn-outline" style="background: white;" onclick="alert('Editing coming soon!')">
+                        <i data-lucide="pencil" style="width: 16px; height: 16px;"></i> Edit
+                    </button>
+                    <button class="btn btn-danger" style="background: #fee2e2;" onclick="alert('Deleting coming soon!')">
+                        <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i> Delete
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </article>
+
+    <!-- Script to render interactive checklist -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ingBlock = document.getElementById("ingredients-raw");
+            const ingListContainer = document.getElementById("ingredients-list");
+            if (ingBlock && ingListContainer) {
+                const text = ingBlock.innerText.trim();
+                if (text) {
+                    const items = text.split('\n').map(i => i.trim()).filter(i => i.length > 0);
+                    ingListContainer.innerHTML = "";
+                    items.forEach((item, idx) => {
+                        const li = document.createElement("li");
+                        li.style.display = "flex";
+                        li.style.alignItems = "flex-start";
+                        li.style.gap = "0.75rem";
+                        li.style.marginBottom = "0.75rem";
+                        li.style.cursor = "pointer";
+                        
+                        const checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
+                        checkbox.id = `ing-${idx}`;
+                        checkbox.style.marginTop = "0.25rem";
+                        checkbox.style.cursor = "pointer";
+                        checkbox.style.accentColor = "var(--primary)";
+                        checkbox.style.width = "16px";
+                        checkbox.style.height = "16px";
+                        
+                        const label = document.createElement("label");
+                        label.htmlFor = `ing-${idx}`;
+                        label.innerText = item;
+                        label.style.cursor = "pointer";
+                        label.style.fontSize = "0.95rem";
+                        label.style.lineHeight = "1.4";
+                        label.style.color = "var(--text-main)";
+                        label.style.transition = "var(--transition)";
+                        
+                        checkbox.addEventListener("change", function() {
+                            if (this.checked) {
+                                label.style.textDecoration = "line-through";
+                                label.style.color = "var(--text-light)";
+                            } else {
+                                label.style.textDecoration = "none";
+                                label.style.color = "var(--text-main)";
+                            }
+                        });
+                        
+                        li.appendChild(checkbox);
+                        li.appendChild(label);
+                        ingListContainer.appendChild(li);
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

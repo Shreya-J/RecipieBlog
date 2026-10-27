@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="form-card" style="max-width: 450px; animation: fadeIn 0.4s ease;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 60px; height: 60px; background-color: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <i data-lucide="user-plus" style="width: 28px; height: 28px; stroke-width: 1.75;"></i>
+            </div>
+            <h2 style="margin-bottom: 0.25rem;">Create Account</h2>
+            <p style="color: var(--text-muted);">Join the community and share recipes.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+
+            <button type="submit" class="btn btn-main" style="width: 100%; margin-top: 1rem;">
+                <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Sign Up
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 2rem; font-size: 0.9rem; color: var(--text-muted);">
+            Already have an account? <a href="{% url 'login' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Log In</a>
+        </p>
+    </div>
+{% endblock %}
