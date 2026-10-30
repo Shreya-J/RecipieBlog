@@ -23,7 +23,9 @@
             <article class="recipe-card fade-in-item">
                 <!-- Decorative Card Top -->
                 <div style="height: 140px; background: linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); color: var(--primary);">
-                    <i data-lucide="utensils-cross" style="width: 48px; height: 48px; stroke-width: 1.25;"></i>
+                        {% if recipe.image %}
+                            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" style="width: 400px; height: 140px; stroke-width: 1.25;">
+                        {% endif %}
                 </div>
                 
                 <div class="recipe-card-content">

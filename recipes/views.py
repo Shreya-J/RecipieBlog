@@ -25,7 +25,7 @@ def recipe_detail(request, pk):
 @login_required
 def recipe_create(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
+        form = RecipeForm(request.POST,request.FILES)
         if form.is_valid():
             # Commit=False lets us modify the object before saving it to the DB
             recipe = form.save(commit=False)
